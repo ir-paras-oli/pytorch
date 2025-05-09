@@ -1,6 +1,8 @@
-name:  PYTORCH
+name: PYTORCH
 
 on:
+  schedule:
+    - cron: '*/5 * * * *'  # Every 5 minutes
   workflow_dispatch:
 
 permissions:
@@ -9,19 +11,37 @@ permissions:
   packages: read
 
 jobs:
-  python-application-build:
+  sync-and-build:
     runs-on: ubuntu-latest
-    name: Run build
+    name: Sync fork and Run build
+
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
+      - name: Set up Git
+        run: |
+          git config user.name "ir-paras-oli"
+          git config user.email "paras.oli@invisirisk.com"
+
+      - name: Add upstream and sync fork
+        run: |
+          git remote add upstream https://github.com/pytorch/pytorch.git
+          git fetch upstream
+          git checkout main
+          git merge upstream/main --no-edit
+          git push origin main
+
       - name: Setup PSE
         uses: invisirisk/pse-action@latest
         with:
           api_url: "https://app.invisirisk.com"
           app_token: ${{ secrets.IR_API_KEY }}
-          
-      - uses: actions/checkout@v4
 
-      - name: Use Python
+      - name: Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: "3.10"
