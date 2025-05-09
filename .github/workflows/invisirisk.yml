@@ -9,6 +9,7 @@ permissions:
   checks: write
   contents: write
   packages: read
+  actions: write
 
 jobs:
   sync-and-build:
