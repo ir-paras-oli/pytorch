@@ -34,7 +34,7 @@ jobs:
           git fetch upstream
           git checkout main
           git merge upstream/main --no-edit
-          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/ir-paras-oli/pytorch main
+          git push https://x-access-token:${{ secrets.MY_PAT }}@github.com/ir-paras-oli/pytorch main
 
       - name: Setup PSE
         uses: invisirisk/pse-action@latest
